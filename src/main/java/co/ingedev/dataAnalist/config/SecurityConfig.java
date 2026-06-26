@@ -3,6 +3,7 @@ package co.ingedev.dataAnalist.config;
 import co.ingedev.dataAnalist.dto.response.ApiError;
 import co.ingedev.dataAnalist.security.JwtAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -29,7 +30,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final ObjectMapper objectMapper;
 
     private static final String[] PUBLIC_PATHS = {
             "/api/v1/auth/**",
@@ -38,6 +38,10 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/actuator/health"
     };
+
+    // Local mapper for 401/403 responses — avoids DI ordering issues with Jackson auto-config in Spring Boot 4.x
+    private static final ObjectMapper ERROR_MAPPER = new ObjectMapper()
+            .registerModule(new JavaTimeModule());
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -75,7 +79,7 @@ public class SecurityConfig {
         try {
             response.setStatus(status);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            objectMapper.writeValue(response.getWriter(), ApiError.of(status, message, path));
+            ERROR_MAPPER.writeValue(response.getWriter(), ApiError.of(status, message, path));
         } catch (Exception ignored) {
         }
     }
