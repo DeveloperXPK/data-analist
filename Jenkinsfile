@@ -5,7 +5,7 @@ pipeline {
         DOCKERHUB_CREDS = credentials('dockerhub-credentials')
         SONAR_TOKEN     = credentials('sonar-token')
         VPS_HOST        = credentials('vps-host')
-        IMAGE_NAME      = "${DOCKERHUB_CREDS_USR}/dataanalist"
+        IMAGE_NAME      = "${DOCKERHUB_CREDS_USR}/data-analist"
         IMAGE_TAG       = "${BUILD_NUMBER}"
         VPS_DEPLOY_PATH = '/opt/dataanalist'
     }
@@ -61,7 +61,7 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                     sh """
                         mvn sonar:sonar \
-                          -Dsonar.projectKey=co.ingedev:dataAnalist \
+                          -Dsonar.projectKey=data-analist \
                           -Dsonar.token=${SONAR_TOKEN}
                     """
                 }

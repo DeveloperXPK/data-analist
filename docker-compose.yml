@@ -18,7 +18,7 @@ services:
       retries: 5
 
   app:
-    image: ${DOCKERHUB_USERNAME}/dataanalist:${IMAGE_TAG:-latest}
+    image: ${DOCKERHUB_USERNAME}/data-analist:${IMAGE_TAG:-latest}
     container_name: dataanalist-app
     restart: unless-stopped
     depends_on:
