@@ -27,7 +27,7 @@ public class CreditStudyServiceImpl implements CreditStudyService {
     @Override
     @Transactional(readOnly = true)
     public Page<CreditStudyResponse> getAll(Authentication auth, StudyStatus status, Pageable pageable) {
-        User user = (User) auth.getPrincipal();
+        User user = extractUser(auth);
         boolean isAdmin = user.getRole() == Role.ADMIN;
 
         if (status != null) {
@@ -44,7 +44,7 @@ public class CreditStudyServiceImpl implements CreditStudyService {
     @Override
     @Transactional(readOnly = true)
     public CreditStudyResponse getById(UUID id, Authentication auth) {
-        User user = (User) auth.getPrincipal();
+        User user = extractUser(auth);
         CreditStudy study = findStudyById(id);
 
         if (user.getRole() != Role.ADMIN && !study.getUser().getId().equals(user.getId())) {
@@ -57,7 +57,7 @@ public class CreditStudyServiceImpl implements CreditStudyService {
     @Override
     @Transactional
     public CreditStudyResponse create(CreditStudyRequest request, Authentication auth) {
-        User user = (User) auth.getPrincipal();
+        User user = extractUser(auth);
 
         CreditStudy study = CreditStudy.builder()
                 .score(request.score())
@@ -74,7 +74,7 @@ public class CreditStudyServiceImpl implements CreditStudyService {
     @Override
     @Transactional
     public CreditStudyResponse update(UUID id, CreditStudyRequest request, Authentication auth) {
-        User user = (User) auth.getPrincipal();
+        User user = extractUser(auth);
         CreditStudy study = findStudyById(id);
 
         if (user.getRole() != Role.ADMIN && !study.getUser().getId().equals(user.getId())) {
@@ -97,6 +97,13 @@ public class CreditStudyServiceImpl implements CreditStudyService {
             throw new ResourceNotFoundException("Credit study not found: " + id);
         }
         studyRepository.deleteById(id);
+    }
+
+    private User extractUser(Authentication auth) {
+        if (auth == null || !(auth.getPrincipal() instanceof User user)) {
+            throw new UnauthorizedException("Authentication required");
+        }
+        return user;
     }
 
     private CreditStudy findStudyById(UUID id) {
