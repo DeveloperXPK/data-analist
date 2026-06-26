@@ -57,11 +57,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh """
-                        mvn sonar:sonar \
-                          -Dsonar.projectKey=data-analist \
-                          -Dsonar.token=${SONAR_TOKEN}
-                    """
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=data-analist -Dsonar.token=$SONAR_TOKEN'
                 }
             }
         }
