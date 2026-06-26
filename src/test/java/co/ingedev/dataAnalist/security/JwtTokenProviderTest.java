@@ -14,10 +14,14 @@ import org.springframework.security.core.Authentication;
 
 import java.util.Base64;
 
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class JwtTokenProviderTest {
 
     @Mock

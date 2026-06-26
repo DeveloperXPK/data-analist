@@ -46,13 +46,13 @@ class CreditStudyServiceTest {
 
     @BeforeEach
     void setUp() {
-        adminUser = User.builder().username("admin").email("admin@test.com")
+        adminUser = User.builder().id(UUID.randomUUID()).username("admin").email("admin@test.com")
                 .password("pass").role(Role.ADMIN).build();
 
-        regularUser = User.builder().username("user1").email("user1@test.com")
+        regularUser = User.builder().id(UUID.randomUUID()).username("user1").email("user1@test.com")
                 .password("pass").role(Role.USER).build();
 
-        otherUser = User.builder().username("user2").email("user2@test.com")
+        otherUser = User.builder().id(UUID.randomUUID()).username("user2").email("user2@test.com")
                 .password("pass").role(Role.USER).build();
 
         study = CreditStudy.builder()
